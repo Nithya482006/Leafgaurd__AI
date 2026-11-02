@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Scan history — LeafGuard AI{% endblock %}
+{% block content %}
+<div class="page-intro"><a class="back-link" href="{{ url_for('index') }}">← Back to scanner</a><div class="eyebrow">YOUR LOCAL RECORDS</div><h1>Scan <em>history.</em></h1><p>Recent predictions saved on this computer for your project demo.</p></div>
+<div class="history-card">
+  <div class="history-header"><div><h2>Recent scans</h2><p>Up to 100 most recent records</p></div><span class="history-count">{{ rows|length }} records</span></div>
+  {% if rows %}
+  <div class="table-wrap"><table><thead><tr><th>Leaf image</th><th>Predicted class</th><th>Confidence</th><th>Date scanned</th></tr></thead><tbody>
+  {% for row in rows %}<tr><td><div class="history-image"><img src="{{ url_for('uploaded_file', filename=row['filename']) }}" alt=""><span>{{ row['original_name'] }}</span></div></td><td><span class="class-chip">{{ row['predicted_class'].replace('___', ' — ').replace('_', ' ') }}</span></td><td><div class="table-confidence"><span>{{ '%.1f'|format(row['confidence'] * 100) }}%</span><div><i style="width: {{ row['confidence'] * 100 }}%"></i></div></div></td><td>{{ row['created_at'].replace('T', ' ') }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<div class="empty-state"><div>↥</div><h3>No scans yet</h3><p>Your predictions will appear here after your first successful scan.</p><a class="btn btn-primary" href="{{ url_for('index') }}">Scan your first leaf ↗</a></div>{% endif %}
+</div>
+{% endblock %}

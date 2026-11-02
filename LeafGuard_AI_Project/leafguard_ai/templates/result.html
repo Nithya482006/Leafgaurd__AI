@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Prediction result — LeafGuard AI{% endblock %}
+{% block content %}
+<div class="page-intro"><a class="back-link" href="{{ url_for('index') }}">← Back to scanner</a><div class="eyebrow">02 / SCAN RESULT</div><h1>Your leaf <em>report.</em></h1><p>Review the model's prediction and use the recommendations as a guide for next steps.</p></div>
+<section class="result-grid">
+  <div class="result-image-card"><div class="card-kicker">UPLOADED IMAGE <span>SCAN #{{ prediction_id }}</span></div><img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Uploaded leaf image"><div class="image-caption"><span class="caption-dot"></span>{{ original_name }}</div></div>
+  <div class="result-main-card">
+    <div class="result-status"><span class="result-check">✳</span><span>MODEL PREDICTION</span></div>
+    <h2>{{ class_name }}</h2>
+    <p class="result-sub">Most likely class from the model's supported categories.</p>
+    <div class="confidence-row"><span>Model confidence</span><strong>{{ confidence }}%</strong></div>
+    <div class="confidence-track"><div style="width: {{ confidence }}%"></div></div>
+    <p class="confidence-note">Confidence is not the same as diagnostic certainty. Image quality and dataset coverage can affect results.</p>
+    <div class="result-divider"></div>
+    <div class="recommend-title"><span>✳</span><div><small>RECOMMENDED NEXT STEPS</small><h3>{{ recommendation.title }}</h3></div></div>
+    <p class="recommend-summary">{{ recommendation.summary }}</p>
+    <ul class="treatment-list">{% for action in recommendation.actions %}<li><span>✓</span>{{ action }}</li>{% endfor %}</ul>
+    <div class="urgency"><span>Suggested follow-up</span><b>{{ recommendation.urgency }}</b></div>
+    <a class="btn btn-primary btn-wide" href="{{ url_for('index') }}">Scan another leaf <span>↗</span></a>
+  </div>
+</section>
+<div class="disclaimer"><span>ⓘ</span><p><b>Important:</b> This is an educational decision-support tool, not a definitive diagnosis. Do not apply chemicals based only on this prediction. Confirm disease and treatment with local agricultural guidance.</p></div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}LeafGuard AI — Plant disease scanner{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> INTELLIGENT CROP CARE</div>
+    <h1>Every leaf has<br> a <em>story.</em></h1>
+    <p class="hero-sub">Spot possible plant diseases early. Upload a leaf photo and let our convolutional neural network help you take the next step.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="#scanner">Scan a leaf <span>↗</span></a><a class="text-link" href="{{ url_for('history') }}">View scan history <span>→</span></a></div>
+    <div class="hero-stats"><div><strong>{{ total }}</strong><span>LEAVES ANALYSED</span></div><div><strong>224<span class="stat-x">×</span>224</strong><span>MODEL INPUT SIZE</span></div><div><strong>AI<span class="stat-leaf">✳</span></strong><span>VISION ASSISTANT</span></div></div>
+  </div>
+  <div class="hero-art">
+    <div class="art-glow"></div>
+    <div class="art-tag tag-top"><span class="tag-icon">✳</span><div><b>Plant intelligence</b><small>Image-based screening</small></div></div>
+    <div class="leaf-illustration">
+      <svg viewBox="0 0 400 440" role="img" aria-label="Illustration of a healthy green leaf">
+        <defs><linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9ed8c"/><stop offset=".48" stop-color="#72bd59"/><stop offset="1" stop-color="#287c4d"/></linearGradient><linearGradient id="vein" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f0ffc7"/><stop offset="1" stop-color="#b2e486"/></linearGradient></defs>
+        <path d="M62 353 C53 255 73 111 302 47 C346 184 301 337 62 353Z" fill="url(#leafFill)" stroke="#d7f4a4" stroke-width="2"/>
+        <path d="M62 353 C153 269 233 160 302 47" fill="none" stroke="url(#vein)" stroke-width="5" stroke-linecap="round"/>
+        <g fill="none" stroke="#d7f4a4" stroke-width="2.3" opacity=".85" stroke-linecap="round"><path d="M118 303 Q103 244 83 213"/><path d="M118 303 Q180 291 226 270"/><path d="M160 252 Q139 191 133 164"/><path d="M160 252 Q221 226 262 202"/><path d="M202 195 Q184 145 185 119"/><path d="M202 195 Q248 172 281 144"/><path d="M246 130 Q238 101 244 81"/></g>
+        <g fill="#326f45" opacity=".23"><ellipse cx="111" cy="215" rx="8" ry="13" transform="rotate(-28 111 215)"/><ellipse cx="229" cy="248" rx="7" ry="11" transform="rotate(55 229 248)"/><ellipse cx="177" cy="157" rx="6" ry="10" transform="rotate(-20 177 157)"/></g>
+        <path d="M62 353 Q45 379 28 391" fill="none" stroke="#b8e67b" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="art-tag tag-bottom"><span class="scan-pulse"></span><div><b>Ready to analyse</b><small>Upload a clear leaf image</small></div></div>
+    <div class="floating-dot dot-one"></div><div class="floating-dot dot-two"></div>
+  </div>
+</section>
+
+<section class="scanner-section" id="scanner">
+  <div class="section-heading"><div><div class="eyebrow">01 / LEAF SCANNER</div><h2>Let’s look closer.</h2></div><p>For best results, use one leaf in focus with good natural light and a simple background.</p></div>
+  <div class="scanner-grid">
+    <form class="upload-card" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+      <div class="upload-card-top"><div class="upload-icon">↥</div><div><h3>Upload leaf image</h3><p>JPG, PNG or WEBP · Max 10 MB</p></div></div>
+      <label class="dropzone" id="dropzone" for="leafImage">
+        <input type="file" id="leafImage" name="leaf_image" accept=".png,.jpg,.jpeg,.webp,image/*" required>
+        <div class="drop-content" id="dropContent"><div class="upload-cloud">↑</div><strong>Drop your image here</strong><span>or <u>browse files</u></span><small>Choose a clear, close-up leaf photo</small></div>
+        <img id="imagePreview" class="image-preview hidden" alt="Selected leaf preview">
+      </label>
+      <div class="upload-note"><span>ⓘ</span> Your photo is used for this prediction and stored locally in this demo.</div>
+      <button class="btn btn-primary btn-wide" id="analyseBtn" type="submit">Analyse leaf <span>↗</span></button>
+    </form>
+    <div class="insight-card">
+      <div class="insight-top"><span class="mini-label">HOW IT WORKS</span><span class="round-spark">✳</span></div>
+      <h3>From leaf to insight<br>in three steps.</h3>
+      <div class="process-list">
+        <div class="process-item"><div class="process-num">01</div><div><b>Image intake</b><p>A photo is resized and prepared for the model.</p></div><span class="process-symbol">▧</span></div>
+        <div class="process-item"><div class="process-num">02</div><div><b>CNN classification</b><p>MobileNetV2 evaluates visual patterns learned from leaf images.</p></div><span class="process-symbol">⌘</span></div>
+        <div class="process-item"><div class="process-num">03</div><div><b>Actionable next steps</b><p>See the predicted class, confidence, and cautious care guidance.</p></div><span class="process-symbol">↗</span></div>
+      </div>
+      {% if not model_ready %}<div class="model-status status-warn"><span>!</span><div><b>Model setup needed</b><small>Train the CNN once using the steps in README.md.</small></div></div>{% else %}<div class="model-status status-ready"><span>✓</span><div><b>Model files found</b><small>Your trained model is ready for predictions.</small></div></div>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="bottom-banner"><div class="banner-symbol">✳</div><div><h3>Good decisions start with good evidence.</h3><p>AI predictions are a starting point. Confirm uncertain or spreading symptoms with a local crop expert before treating.</p></div><a href="{{ url_for('history') }}">Explore history ↗</a></section>
+{% endblock %}
